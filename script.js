@@ -1,20 +1,6 @@
 class Square {
-    constructor(generation, parent, airport) {
-        this.generation = generation;
-
-        this.airport = airport;
-
-        this.probabilityPass =
-            generation * 0.25 - 1 < Math.random() ? true : false;
-
-        this.divisions =
-            generation !== 1 ? Math.floor(Math.random() * 3) + 2 : 4;
-
-        this.layout =
-            this.divisions !== 4 ? (Math.random() < 0.5 ? "row" : "col") : null;
-
-        this.direction =
-            this.divisions !== 4 ? (Math.random() < 0.5 ? "for" : "rev") : null;
+    constructor(generation, parent, airport = false) {
+        squareStats(this, generation, airport);
 
         const colors = [
             "rgb(0,75,0)",
@@ -32,18 +18,95 @@ class Square {
             this.direction
         );
 
-        this.contents = [];
-        for (let index = 0; index < this.divisions; index++) {
-            if (this.generation < 7) {
-                if (this.probabilityPass) {
-                    this.contents.push(new Square(generation + 1, newSquare));
+        fillContents(
+            this,
+            newSquare,
+            this.generation,
+            this.airport,
+            this.probabilityPass,
+            this.divisions,
+            this.color
+        );
+    }
+}
+
+function fillContents(
+    square,
+    newSquare,
+    generation,
+    probabilityPass,
+    airport,
+    divisions,
+    color
+) {
+    let contents = [];
+    for (let index = 0; index < divisions; index++) {
+        if (generation < 7) {
+            if (airport) {
+                if (generation === 1) {
+                    if (index === 0) {
+                        contents.push(
+                            new Square(generation + 1, newSquare, true)
+                        );
+                    } else {
+                        contents.push(new Square(generation + 1, newSquare));
+                    }
                 } else {
-                    newSquare.style.backgroundColor = this.color;
+                    if (index === 3) {
+                        contents.push(
+                            new Square(generation + 1, newSquare, true)
+                        );
+                    } else {
+                        contents.push(new Square(generation + 1, newSquare));
+                    }
                 }
+                square.contents = contents;
+            } else if (probabilityPass) {
+                contents.push(new Square(generation + 1, newSquare));
+                square.contents = contents;
             } else {
-                newSquare.style.backgroundColor = this.color;
+                newSquare.style.backgroundColor = color;
             }
+        } else {
+            newSquare.style.backgroundColor = color;
         }
+    }
+}
+
+function squareStats(square, generation, aiport) {
+    square.generation = generation;
+    square.aiport = aiport;
+    square.probabilityPass =
+        generation * 0.25 - 1 < Math.random() ? true : false;
+
+    if (generation === 1) {
+        square.divisions = 4;
+        square.layout = null;
+        square.direction = null;
+    } else if (generation < 7) {
+        if (aiport) {
+            let divisions = Math.random() < 0.5 ? 3 : 4;
+            square.divisions = divisions;
+            if (divisions === 3) {
+                let layout = Math.random() < 0.5 ? "row" : "col";
+                square.layout = layout;
+                square.direction = "rev";
+            } else {
+                square.layout = null;
+                square.direction = null;
+            }
+        } else {
+            let divisions = Math.floor(Math.random() * 3) + 2;
+            square.divisions = divisions;
+            square.layout =
+                divisions !== 4 ? (Math.random() < 0.5 ? "row" : "col") : null;
+            square.direction =
+                divisions !== 4 ? (Math.random() < 0.5 ? "for" : "rev") : null;
+        }
+    } else {
+        square.divisions = 1;
+        square.layout = null;
+        square.direction = null;
     }
 }
 
