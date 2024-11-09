@@ -1,6 +1,8 @@
 class Square {
-    constructor(generation, parent) {
+    constructor(generation, parent, airport) {
         this.generation = generation;
+
+        this.airport = airport;
 
         this.probabilityPass =
             generation * 0.25 - 1 < Math.random() ? true : false;
@@ -25,31 +27,23 @@ class Square {
         const newSquare = createSquare(
             parent,
             this.generation,
-            this.probabilityPass,
             this.divisions,
             this.layout,
-            this.direction,
-            this.color
+            this.direction
         );
 
         this.contents = [];
         for (let index = 0; index < this.divisions; index++) {
             if (this.probabilityPass) {
                 this.contents.push(new Square(generation + 1, newSquare));
+            } else {
+                newSquare.style.backgroundColor = this.color;
             }
         }
     }
 }
 
-function createSquare(
-    parent,
-    generation,
-    probabilityPass,
-    divisions,
-    layout,
-    direction,
-    color
-) {
+function createSquare(parent, generation, divisions, layout, direction) {
     let newSquare = document.createElement("div");
 
     if (generation === 1) {
@@ -90,14 +84,11 @@ function createSquare(
         default:
             console.warn("Invalid division count");
     }
-
-    if (!probabilityPass) {
-        newSquare.style.backgroundColor = color;
-    }
     parent.appendChild(newSquare);
     return newSquare;
 }
 
 const start = document.querySelector(".wrap");
-const firstSquare = new Square(1, start);
+const airport = true;
+const firstSquare = new Square(1, start, airport);
 console.log(firstSquare);
