@@ -34,8 +34,12 @@ class Square {
 
         this.contents = [];
         for (let index = 0; index < this.divisions; index++) {
-            if (this.probabilityPass) {
-                this.contents.push(new Square(generation + 1, newSquare));
+            if (this.generation < 7) {
+                if (this.probabilityPass) {
+                    this.contents.push(new Square(generation + 1, newSquare));
+                } else {
+                    newSquare.style.backgroundColor = this.color;
+                }
             } else {
                 newSquare.style.backgroundColor = this.color;
             }
