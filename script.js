@@ -69,14 +69,35 @@ function fillContents(square, newSquare) {
                         );
                     }
                 } else {
-                    if (index === 3) {
-                        contents.push(
-                            new Square(square.generation + 1, newSquare, true)
-                        );
-                    } else {
-                        contents.push(
-                            new Square(square.generation + 1, newSquare)
-                        );
+                    if (square.divisions === 3) {
+                        if (index === 1) {
+                            contents.push(
+                                new Square(
+                                    square.generation + 1,
+                                    newSquare,
+                                    true
+                                )
+                            );
+                        } else {
+                            contents.push(
+                                new Square(square.generation + 1, newSquare)
+                            );
+                        }
+                    }
+                    if (square.divisions === 4) {
+                        if (index === 3) {
+                            contents.push(
+                                new Square(
+                                    square.generation + 1,
+                                    newSquare,
+                                    true
+                                )
+                            );
+                        } else {
+                            contents.push(
+                                new Square(square.generation + 1, newSquare)
+                            );
+                        }
                     }
                 }
             } else {
