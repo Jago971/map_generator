@@ -1,14 +1,14 @@
 class Square {
     constructor(generation, parent, airport = false) {
-        squareStats(this, generation, airport);
+        generateSquareStats(this, generation, airport);
 
-        const newSquare = createSquare(this, parent);
+        const newSquare = createNewSquareElement(this, parent);
 
         fillContents(this, newSquare);
     }
 }
 
-function squareStats(square, generation, airport) {
+function generateSquareStats(square, generation, airport) {
     square.generation = generation;
     square.airport = airport;
     square.probabilityPass =
@@ -51,6 +51,50 @@ function squareStats(square, generation, airport) {
         "rgb(95, 70, 55)",
     ];
     square.color = colors[Math.floor(Math.random() * 4)];
+}
+
+function createNewSquareElement(square, parent) {
+    let newSquare = document.createElement("div");
+
+    square.generation === 1
+        ? newSquare.classList.add("square", "base")
+        : newSquare.classList.add("square");
+
+    switch (square.divisions) {
+        case 1:
+            newSquare.style.display = "initial";
+            break;
+        case 2:
+            newSquare.style.display = "flex";
+            square.layout === "row"
+                ? square.direction === "for"
+                    ? (newSquare.style.flexDirection = "row")
+                    : (newSquare.style.flexDirection = "row-reverse")
+                : square.direction === "for"
+                ? (newSquare.style.flexDirection = "column")
+                : (newSquare.style.flexDirection = "column-reverse");
+            break;
+        case 3:
+            newSquare.style.display = "grid";
+            square.layout === "row"
+                ? square.direction === "for"
+                    ? newSquare.classList.add("row", "for")
+                    : newSquare.classList.add("row", "rev")
+                : square.direction === "for"
+                ? newSquare.classList.add("col", "for")
+                : newSquare.classList.add("col", "rev");
+            break;
+        case 4:
+            newSquare.style.display = "grid";
+            newSquare.style.gridTemplateRows = "1fr 1fr";
+            newSquare.style.gridTemplateColumns = "1fr 1fr";
+            break;
+        default:
+            console.warn("Invalid division count");
+    }
+
+    parent.appendChild(newSquare);
+    return newSquare;
 }
 
 function fillContents(square, newSquare) {
@@ -111,60 +155,10 @@ function fillContents(square, newSquare) {
             newSquare.style.backgroundColor = square.color;
         }
     }
-    if (square.airport) {
+    if (square.generation === 7 && square.airport) {
         newSquare.style.border = "solid 1px yellow";
     }
     square.contents = contents;
-}
-
-function createSquare(square, parent) {
-    let newSquare = document.createElement("div");
-
-    if (square.generation === 1) {
-        newSquare.classList.add("square", "base");
-    } else {
-        newSquare.classList.add("square");
-    }
-
-    switch (square.divisions) {
-        case 1:
-            newSquare.style.display = "initial";
-            break;
-        case 2:
-            newSquare.style.display = "flex";
-            square.layout === "row"
-                ? square.direction === "for"
-                    ? (newSquare.style.flexDirection = "row")
-                    : (newSquare.style.flexDirection = "row-reverse")
-                : square.direction === "for"
-                ? (newSquare.style.flexDirection = "column")
-                : (newSquare.style.flexDirection = "column-reverse");
-            break;
-        case 3:
-            newSquare.style.display = "grid";
-            square.layout === "row"
-                ? square.direction === "for"
-                    ? newSquare.classList.add("row", "for")
-                    : newSquare.classList.add("row", "rev")
-                : square.direction === "for"
-                ? newSquare.classList.add("col", "for")
-                : newSquare.classList.add("col", "rev");
-            break;
-        case 4:
-            newSquare.style.display = "grid";
-            newSquare.style.gridTemplateRows = "1fr 1fr";
-            newSquare.style.gridTemplateColumns = "1fr 1fr";
-            break;
-        default:
-            console.warn("Invalid division count");
-    }
-
-    if (!square.probabilityPass) {
-        newSquare.style.backgroundColor = square.color;
-    }
-
-    parent.appendChild(newSquare);
-    return newSquare;
 }
 
 const start = document.querySelector(".wrap");
