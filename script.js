@@ -42,31 +42,8 @@ function fillContents(
     let contents = [];
     for (let index = 0; index < divisions; index++) {
         if (generation < 7) {
-            if (airport) {
-                if (generation === 1) {
-                    if (index === 0) {
-                        contents.push(
-                            new Square(generation + 1, newSquare, true)
-                        );
-                    } else {
-                        contents.push(new Square(generation + 1, newSquare));
-                    }
-                } else {
-                    if (index === 3) {
-                        contents.push(
-                            new Square(generation + 1, newSquare, true)
-                        );
-                    } else {
-                        contents.push(new Square(generation + 1, newSquare));
-                    }
-                }
-                square.contents = contents;
-            } else if (probabilityPass) {
-                contents.push(new Square(generation + 1, newSquare));
-                square.contents = contents;
-            } else {
-                newSquare.style.backgroundColor = color;
-            }
+            contents.push(new Square(generation + 1, newSquare));
+            square.contents = contents;
         } else {
             newSquare.style.backgroundColor = color;
         }
