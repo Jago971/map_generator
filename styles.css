@@ -12,17 +12,26 @@ body {
     width: 100%;
     position: absolute;
 }
-.base {
-    height: 100%;
-    width: 100%;
-}
+
 .square {
+    border-radius: max(0.5px, 0.25%);
     position: relative;
     display: grid;
-    gap: 1px;
+    gap: max(0.5px, 0.25%);
     height: 100%;
     width: 100%;
     background-color: gray;
+}
+
+.base {
+    height: 100vh;
+    width: 100vh;
+}
+
+.airport {
+    position: absolute;
+    height: 100%;
+    width: 100%;
 }
 
 /* Column - Forward */

@@ -1,5 +1,8 @@
 class Square {
     constructor(generation, parent, airport = false) {
+        this.maxGenerations = 8;
+        this.airportGeneration_size = 5;
+        this.smallSquareLiklihood = 0.8;
         generateSquareStats(this, generation, airport);
 
         const newSquare = createNewSquareElement(this, parent);
@@ -12,13 +15,16 @@ function generateSquareStats(square, generation, airport) {
     square.generation = generation;
     square.airport = airport;
     square.probabilityPass =
-        square.generation * 0.25 - 1 < Math.random() ? true : false;
+        square.generation * (1 - square.smallSquareLiklihood) - 1 <
+        Math.random()
+            ? true
+            : false;
 
     if (generation === 1) {
         square.divisions = 4;
         square.layout = null;
         square.direction = null;
-    } else if (generation < 7) {
+    } else if (generation < square.maxGenerations) {
         if (airport) {
             let divisions = Math.random() < 0.5 ? 3 : 4;
             square.divisions = divisions;
@@ -100,7 +106,7 @@ function createNewSquareElement(square, parent) {
 function fillContents(square, newSquare) {
     let contents = [];
     for (let index = 0; index < square.divisions; index++) {
-        if (square.generation < 7) {
+        if (square.generation < square.maxGenerations) {
             if (square.airport) {
                 if (square.generation === 1) {
                     if (index === 0) {
@@ -112,7 +118,7 @@ function fillContents(square, newSquare) {
                             new Square(square.generation + 1, newSquare)
                         );
                     }
-                } else {
+                } else if (square.generation < square.airportGeneration_size) {
                     if (square.divisions === 3) {
                         if (index === 1) {
                             contents.push(
@@ -143,6 +149,12 @@ function fillContents(square, newSquare) {
                             );
                         }
                     }
+                } else {
+                    const airport = document.createElement("img");
+                    airport.src = "./assets/airport1.svg";
+                    airport.classList.add("airport");
+                    newSquare.appendChild(airport);
+                    newSquare.style.backgroundColor = "yellowGreen";
                 }
             } else {
                 if (square.probabilityPass) {
@@ -154,9 +166,6 @@ function fillContents(square, newSquare) {
         } else {
             newSquare.style.backgroundColor = square.color;
         }
-    }
-    if (square.generation === 7 && square.airport) {
-        newSquare.style.border = "solid 1px yellow";
     }
     square.contents = contents;
 }
