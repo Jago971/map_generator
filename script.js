@@ -127,36 +127,28 @@ function fillContents(square, newSquare) {
 
 function fillContentsAirport(square, newSquare, index) {
     if (square.generation === 1) {
-        index === 0
-            ? square.contents.push(
-                  new Square(square.generation + 1, newSquare, true)
-              )
-            : square.contents.push(
-                  new Square(square.generation + 1, newSquare)
-              );
+        square.contents.push(
+            new Square(
+                square.generation + 1,
+                newSquare,
+                index === 0 ? true : false
+            )
+        );
         return;
-    }
-    if (square.generation < square.airportGeneration_size) {
-        if (square.divisions === 3) {
-            index === 1
-                ? square.contents.push(
-                      new Square(square.generation + 1, newSquare, true)
-                  )
-                : square.contents.push(
-                      new Square(square.generation + 1, newSquare)
-                  );
+    } else if (square.generation < square.airportGeneration_size) {
+        if (square.divisions === 3 && index === 1) {
+            square.contents.push(
+                new Square(square.generation + 1, newSquare, true)
+            );
             return;
         }
-        if (square.divisions === 4) {
-            index === 3
-                ? square.contents.push(
-                      new Square(square.generation + 1, newSquare, true)
-                  )
-                : square.contents.push(
-                      new Square(square.generation + 1, newSquare)
-                  );
+        if (square.divisions === 4 && index === 3) {
+            square.contents.push(
+                new Square(square.generation + 1, newSquare, true)
+            );
             return;
         }
+        new Square(square.generation + 1, newSquare);
     } else {
         const airport = document.createElement("img");
         airport.src = "./assets/airport1.svg";
