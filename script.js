@@ -1,5 +1,5 @@
 class Square {
-    constructor(generation, parent, airport = false) {
+    constructor(generation, parent, airport = false, forrests = false) {
         this.maxGenerations = 8;
         this.airportGeneration_size = 5;
         this.smallSquareLiklihood = 0.8;
@@ -11,9 +11,10 @@ class Square {
     }
 }
 
-function generateSquareStats(square, generation, airport) {
+function generateSquareStats(square, generation, airport, forrests) {
     square.generation = generation;
     square.airport = airport;
+    square.forrests = forrests;
     square.probabilityPass =
         square.generation * (1 - square.smallSquareLiklihood) - 1 <
         Math.random()
@@ -104,72 +105,70 @@ function createNewSquareElement(square, parent) {
 }
 
 function fillContents(square, newSquare) {
-    let contents = [];
+    square.contents = [];
     for (let index = 0; index < square.divisions; index++) {
-        if (square.generation < square.maxGenerations) {
-            if (square.airport) {
-                if (square.generation === 1) {
-                    if (index === 0) {
-                        contents.push(
-                            new Square(square.generation + 1, newSquare, true)
-                        );
-                    } else {
-                        contents.push(
-                            new Square(square.generation + 1, newSquare)
-                        );
-                    }
-                } else if (square.generation < square.airportGeneration_size) {
-                    if (square.divisions === 3) {
-                        if (index === 1) {
-                            contents.push(
-                                new Square(
-                                    square.generation + 1,
-                                    newSquare,
-                                    true
-                                )
-                            );
-                        } else {
-                            contents.push(
-                                new Square(square.generation + 1, newSquare)
-                            );
-                        }
-                    }
-                    if (square.divisions === 4) {
-                        if (index === 3) {
-                            contents.push(
-                                new Square(
-                                    square.generation + 1,
-                                    newSquare,
-                                    true
-                                )
-                            );
-                        } else {
-                            contents.push(
-                                new Square(square.generation + 1, newSquare)
-                            );
-                        }
-                    }
-                } else {
-                    const airport = document.createElement("img");
-                    airport.src = "./assets/airport1.svg";
-                    airport.classList.add("airport");
-                    newSquare.appendChild(airport);
-                    newSquare.style.backgroundColor = "Green";
-                }
-            } else {
-                if (square.probabilityPass) {
-                    contents.push(new Square(square.generation + 1, newSquare));
-                } else {
-                    newSquare.style.backgroundColor = square.color;
-                }
-            }
-        } else {
+        if (square.generation >= square.maxGenerations) {
             newSquare.style.backgroundColor = square.color;
+            return;
+        }
+        if (square.airport) {
+            fillContentsAirport(square, newSquare, index);
+        } else {
+            if (square.probabilityPass) {
+                square.contents.push(
+                    new Square(square.generation + 1, newSquare)
+                );
+            } else {
+                newSquare.style.backgroundColor = square.color;
+            }
         }
     }
-    square.contents = contents;
 }
 
+function fillContentsAirport(square, newSquare, index) {
+    if (square.generation === 1) {
+        index === 0
+            ? square.contents.push(
+                  new Square(square.generation + 1, newSquare, true)
+              )
+            : square.contents.push(
+                  new Square(square.generation + 1, newSquare)
+              );
+        return;
+    }
+    if (square.generation < square.airportGeneration_size) {
+        if (square.divisions === 3) {
+            index === 1
+                ? square.contents.push(
+                      new Square(square.generation + 1, newSquare, true)
+                  )
+                : square.contents.push(
+                      new Square(square.generation + 1, newSquare)
+                  );
+            return;
+        }
+        if (square.divisions === 4) {
+            index === 3
+                ? square.contents.push(
+                      new Square(square.generation + 1, newSquare, true)
+                  )
+                : square.contents.push(
+                      new Square(square.generation + 1, newSquare)
+                  );
+            return;
+        }
+    } else {
+        const airport = document.createElement("img");
+        airport.src = "./assets/airport1.svg";
+        airport.classList.add("airport");
+        newSquare.appendChild(airport);
+        newSquare.style.backgroundColor = "Green";
+    }
+}
+
+const includeAirport = true;
+const includeForrests = true;
+
 const start = document.querySelector(".wrap");
-const firstSquare = new Square(1, start, true);
+const firstSquare = new Square(1, start, includeAirport);
 console.log(firstSquare);
