@@ -154,7 +154,7 @@ function fillContents(square, newSquare) {
                     airport.src = "./assets/airport1.svg";
                     airport.classList.add("airport");
                     newSquare.appendChild(airport);
-                    newSquare.style.backgroundColor = "yellowGreen";
+                    newSquare.style.backgroundColor = "Green";
                 }
             } else {
                 if (square.probabilityPass) {

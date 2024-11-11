@@ -23,10 +23,10 @@ body {
     background-color: gray;
 }
 
-.base {
+/* .base {
     height: 100vh;
     width: 100vh;
-}
+} */
 
 .airport {
     position: absolute;
